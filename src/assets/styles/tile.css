@@ -1,0 +1,12 @@
+.tile-container {
+    width: 100%;
+    border: 1.5px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chess-piece-image {
+    width: 4rem;
+    height: 4rem;
+}

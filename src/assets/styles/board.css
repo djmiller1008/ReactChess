@@ -1,0 +1,15 @@
+.board-container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 6rem;
+    border: 2px solid black;
+    width: 650px;
+    height: 550px;
+}
+
+.row-container {
+    display: flex;
+    
+    height: 100%;
+}
