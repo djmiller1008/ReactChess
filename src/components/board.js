@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Rook from './pieces/rook';
 import Knight from './pieces/knight';
 import Bishop from './pieces/bishop';
@@ -23,58 +23,63 @@ import '../assets/styles/board.css';
 const BOARD_SIZE = 8;
 
 export default function Board() {
+  const [board, setBoard] = useState([]);
+
+  useEffect(() => {
+    setupBoard();
+  }, []);
   
 
-  const renderBoard = () => {
-    let board = [];
+  const setupBoard = () => {
+    let grid = [];
     for (let i = 0; i < BOARD_SIZE; i++) {
-        const row = renderRow(i);
-        board.push(row);
+        const row = setupRow(i);
+        grid.push(row);
     }
-    return board;
+    setBoard(grid);
   }
   
-  const renderRow = (rowNumber) => {
+  const setupRow = (rowNumber) => {
     let row = [];
     for (let i = 0; i < BOARD_SIZE; i++) {
         if (rowNumber === 0) {
             if (i === 0 || i === 7) {
-                row.push(<Rook color={'black'} img={BlackRook} />)
+                row.push(<Tile child={<Rook color='black' img={BlackRook} />}></Tile>)
             } else if (i === 1 || i === 6) {
-                row.push(<Knight color={'black'} img={BlackKnight} />)
+                row.push(<Tile child={<Knight color='black' img={BlackKnight} />}></Tile>)
             } else if (i === 2 || i === 5) {
-                row.push(<Bishop color={'black'} img={BlackBishop} />)
+                row.push(<Tile child={<Bishop color='black' img={BlackBishop} />}></Tile>)
             } else if (i === 3) {
-                row.push(<Queen color={'black'} img={BlackQueen} />)
+                row.push(<Tile child={<Queen color='black' img={BlackQueen} />}></Tile>)
             } else if (i === 4) {
-                row.push(<King color={'black'} img={BlackKing} />)
+                row.push(<Tile child={<King color='black' img={BlackKing} />}></Tile>)
             }
         } else if (rowNumber === 1) {
-            row.push(<Pawn color={'black'} img={BlackPawn} />)
+            row.push(<Tile child={<Pawn color='black' img={BlackPawn} />}> </Tile>)
         } else if (rowNumber === 6) {
-            row.push(<Pawn color={'white'} img={WhitePawn} />)
+            row.push(<Tile child={<Pawn color='white' img={WhitePawn} />}> </Tile>)
         } else if (rowNumber === 7) {
             if (i === 0 || i === 7) {
-                row.push(<Rook color={'white'} img={WhiteRook} />)
+                row.push(<Tile child={<Rook color='white' img={WhiteRook} />}></Tile>)
             } else if (i === 1 || i === 6) {
-                row.push(<Knight color={'white'} img={WhiteKnight} />)
+                row.push(<Tile child={<Knight color='white' img={WhiteKnight} />}></Tile>)
             } else if (i === 2 || i === 5) {
-                row.push(<Bishop color={'white'} img={WhiteBishop} />)
+                row.push(<Tile child={<Bishop color='white' img={WhiteBishop} />}></Tile>)
             } else if (i === 3) {
-                row.push(<Queen color={'white'} img={WhiteQueen} />)
+                row.push(<Tile child={<Queen color='white' img={WhiteQueen} />}></Tile>)
             } else if (i === 4) {
-                row.push(<King color={'white'} img={WhiteKing} />)
+                row.push(<Tile child={<King color='white' img={WhiteKing} />}></Tile>)
             }
         } else {
-            row.push(<Tile />)
+            row.push(<Tile child={null} position={[rowNumber, i]} key={i} />)
         }
     }
-    return <div className='row-container'>{row}</div>;
+    return <div key={rowNumber} className='row-container'>{row}</div>;
   }
 
   return (
     <div className='board-container'>
-        {renderBoard()}
+        {board}
     </div>
   )
 }
