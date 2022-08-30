@@ -1,12 +1,21 @@
 .tile-container {
-    width: 100%;
-    border: 1.5px solid black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+   border: 1px solid black;
+   width: 4rem;
+   height: 4rem;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   
 }
 
-.chess-piece-image {
-    width: 4rem;
-    height: 4rem;
+.tile-container:nth-child() {
+    background-color: brown;
 }
+
+.piece-image {
+    text-align: center;
+    width: 3rem;
+    height: 3rem;
+    
+}
+
