@@ -5,8 +5,8 @@ import { observeBoard } from './components/game'
 
 const root = document.getElementById('root')
 
-observeBoard((knightPositions) =>
-  ReactDOM.render(<Board knightPositions={knightPositions} />, root)
+observeBoard((boardPieces) =>
+  ReactDOM.render(<Board boardPieces={boardPieces} />, root)
 )
 
 
