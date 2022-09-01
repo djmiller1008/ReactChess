@@ -12,17 +12,19 @@ export default function Board({ boardPieces }) {
         const black = (x + y) % 2 === 1;
         
         let pieceColor = null;
-        let isKnightHere = null;
+        let pieceComponent = null;
         Object.keys(boardPieces).forEach(piece => {
             boardPieces[piece].forEach((pieceInfo, i) => {
                 if (x === pieceInfo[0] && y === pieceInfo[1]) {
-                    isKnightHere = true;
                     pieceColor = pieceInfo[2];
+                    if (piece === 'knight') {
+                        pieceComponent = <Knight pieceColor={pieceColor}  pos={[x, y]} />
+                    }
                 }
             })
         })
         
-        const piece = isKnightHere ? <Knight pieceColor={pieceColor}  pos={[x, y]} /> : null;
+        const piece = pieceComponent ? pieceComponent : null;
 
         return <div><Tile x={x} y={y} black={black}>{piece}</Tile></div>
     }
