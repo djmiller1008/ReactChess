@@ -9,7 +9,7 @@ export default function Knight({ pieceColor, pos }) {
 
   const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: 'piece',
-    item: { pos, pieceColor },
+    item: { pos, pieceColor, piece: 'knight' },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging()
     })
