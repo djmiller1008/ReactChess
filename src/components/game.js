@@ -29,11 +29,12 @@ export function movePiece(toX, toY, originalInfo) {
     }
   });
 
-  willCapturePiece(toX, toY, originalInfo);
+  
   if (!isFriendlyPiece(toX, toY, originalInfo) && isPlayerTurn(pieceColor)) {
-    
+    willCapturePiece(toX, toY, originalInfo);
     boardPieces[originalInfo.piece][index] = [toX, toY, pieceColor];
     switchTurns();
+    
     emitChange();
   }
  
@@ -80,7 +81,8 @@ function willCapturePiece(toX, toY, originalInfo) {
     boardPieces[piece].forEach((pieceInfo, i) => {
       if (pieceInfo[2] !== pieceColor && pieceInfo[0] === toX && pieceInfo[1] === toY) {
         const index = boardPieces[piece].indexOf(pieceInfo);
-        boardPieces[piece][index] = []
+        boardPieces[piece][index] = [];
+        
       }
     })
   })
