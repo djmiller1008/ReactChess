@@ -4,6 +4,8 @@ let boardPieces = {
 
 let observer = null
 
+let turn = 'white';
+
 function emitChange() {
   return observer(boardPieces)
 }
@@ -15,13 +17,12 @@ export function observeBoard(update) {
  
   observer = update
   emitChange()
-  console.log(boardPieces);
 }
 
-export function moveKnight(toX, toY, originalInfo) {
+export function movePiece(toX, toY, originalInfo) {
   let index;
   let pieceColor;
-  boardPieces.knight.forEach((pos, i) => {
+  boardPieces[originalInfo.piece].forEach((pos, i) => {
     if (pos[0] === originalInfo.pos[0] && pos[1] === originalInfo.pos[1]) {
         pieceColor = pos[2];
         index = i;
@@ -29,13 +30,31 @@ export function moveKnight(toX, toY, originalInfo) {
   });
 
   willCapturePiece(toX, toY, originalInfo);
-  if (!isFriendlyPiece(toX, toY, originalInfo)) {
+  if (!isFriendlyPiece(toX, toY, originalInfo) && isPlayerTurn(pieceColor)) {
     
-    boardPieces.knight[index] = [toX, toY, pieceColor];
+    boardPieces[originalInfo.piece][index] = [toX, toY, pieceColor];
+    switchTurns();
     emitChange();
   }
  
 
+}
+
+function isPlayerTurn(pieceColor) {
+  if (turn === pieceColor) {
+    return true;
+  } else {
+    alert(`It is ${turn}'s turn`);
+    return false;
+  }
+}
+
+function switchTurns() {
+  if (turn === 'white') {
+    turn = 'black';
+  } else {
+    turn = 'white';
+  }
 }
 
 function isFriendlyPiece(toX, toY, originalInfo) {
@@ -68,8 +87,21 @@ function willCapturePiece(toX, toY, originalInfo) {
 
 }
 
+
+export function canMovePiece(toX, toY, originalInfo) {
+  switch (originalInfo.piece) {
+    case 'knight':
+      return canMoveKnight(toX, toY, originalInfo);
+    default:
+      return;
+  }
+}
+
 export function canMoveKnight(toX, toY, originalInfo) {
     
+    if (isFriendlyPiece(toX, toY, originalInfo)) {
+      return false;
+    }
     
     const [x, y] = originalInfo.pos
     const dx = toX - x
