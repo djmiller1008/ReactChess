@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDrop } from 'react-dnd';
 import '../assets/styles/tile.css'
-import { canMoveKnight, moveKnight } from './game';
+import { canMovePiece, movePiece } from './game';
 
 
 
@@ -11,8 +11,8 @@ export default function Tile({ x, y, black, children }) {
   const [{ canDrop }, drop] = useDrop(
     () => ({
       accept: 'piece',
-      drop: (item) => moveKnight(x, y, item),
-      canDrop: (item) => canMoveKnight(x, y, item),
+      drop: (item) => movePiece(x, y, item),
+      canDrop: (item) => canMovePiece(x, y, item),
       collect: (monitor) => ({
         canDrop: !!monitor.canDrop(),
        
