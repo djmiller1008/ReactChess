@@ -1,5 +1,6 @@
 let boardPieces = {
-  knight: [[0, 1, 'black'], [0, 6, 'black'], [7, 1, 'white'], [7, 6, 'white']]
+  knight: [[0, 1, 'black'], [0, 6, 'black'], [7, 1, 'white'], [7, 6, 'white']],
+  bishop: [[0, 2, 'black'], [0, 5, 'black'], [7, 2, 'white'], [7, 5, 'white']]
 }
 
 let observer = null
@@ -94,13 +95,14 @@ export function canMovePiece(toX, toY, originalInfo) {
   switch (originalInfo.piece) {
     case 'knight':
       return canMoveKnight(toX, toY, originalInfo);
+    case 'bishop':
+      return canMoveBishop(toX, toY, originalInfo);
     default:
       return;
   }
 }
 
 export function canMoveKnight(toX, toY, originalInfo) {
-    
     if (isFriendlyPiece(toX, toY, originalInfo)) {
       return false;
     }
@@ -113,5 +115,18 @@ export function canMoveKnight(toX, toY, originalInfo) {
       (Math.abs(dx) === 2 && Math.abs(dy) === 1) ||
       (Math.abs(dx) === 1 && Math.abs(dy) === 2)
     )
+}
+
+export function canMoveBishop(toX, toY, originalInfo) {
+  if (isFriendlyPiece(toX, toY, originalInfo)) {
+    return false;
   }
+
+  const [x, y] = originalInfo.pos
+  const dx = toX - x;
+  const dy = toY - y;
+  
+  return (Math.abs(dx) === Math.abs(dy));
+
+}
   
