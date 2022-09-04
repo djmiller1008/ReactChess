@@ -6,12 +6,18 @@ import '../../assets/styles/tile.css';
 
 export default function Bishop({ pieceColor, pos }) {
 
-  const [ ,drag, preview] = useDrag(() => ({
-    type: 'piece',
-    item: { pos, pieceColor, piece: 'bishop' }
-  }));
+   
+ 
+    const [ ,drag, preview] = useDrag(() => ({
+      type: 'piece',
+      item: { pos, pieceColor, piece: 'bishop' }
+    }));
+
+  
+
 
   const src = pieceColor === 'white' ? WhiteBishop : BlackBishop;
+ 
 
   return (
     <>
