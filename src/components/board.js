@@ -3,10 +3,10 @@ import Tile from "./tile";
 import Knight from "./pieces/knight";
 import Bishop from "./pieces/bishop";
 import Rook from "./pieces/rook";
+import Queen from "./pieces/queen";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import '../assets/styles/board.css';
-import { moveKnight, canMoveKnight } from "./game";
 
 export default function Board({ boardPieces }) {
 
@@ -25,6 +25,8 @@ export default function Board({ boardPieces }) {
                         pieceComponent = <Bishop pieceColor={pieceColor} pos={[x, y]} />
                     } else if (piece === 'rook') {
                         pieceComponent = <Rook pieceColor={pieceColor} pos={[x, y]} />
+                    } else if (piece === 'queen') {
+                        pieceComponent = <Queen pieceColor={pieceColor} pos={[x, y]} />
                     }
                 }
             })
