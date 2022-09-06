@@ -2,7 +2,8 @@ let boardPieces = {
   knight: [[0, 1, 'black'], [0, 6, 'black'], [7, 1, 'white'], [7, 6, 'white']],
   bishop: [[0, 2, 'black'], [0, 5, 'black'], [7, 2, 'white'], [7, 5, 'white']],
   rook: [[0, 0, 'black'], [0, 7, 'black'], [7, 0, 'white'], [7, 7, 'white']],
-  queen: [[0, 3, 'black'], [7, 3, 'white']]
+  queen: [[0, 3, 'black'], [7, 3, 'white']],
+  king: [[0, 4, 'black'], [7, 4, 'white']]
 }
 
 let observer = null
