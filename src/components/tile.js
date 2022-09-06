@@ -3,9 +3,6 @@ import { useDrop } from 'react-dnd';
 import '../assets/styles/tile.css'
 import { canMovePiece, movePiece } from './game';
 
-
-
-
 export default function Tile({ x, y, black, children }) {
 
   const [{ canDrop }, drop] = useDrop(
