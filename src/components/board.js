@@ -4,6 +4,7 @@ import Knight from "./pieces/knight";
 import Bishop from "./pieces/bishop";
 import Rook from "./pieces/rook";
 import Queen from "./pieces/queen";
+import King from "./pieces/king";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import '../assets/styles/board.css';
@@ -27,6 +28,8 @@ export default function Board({ boardPieces }) {
                         pieceComponent = <Rook pieceColor={pieceColor} pos={[x, y]} />
                     } else if (piece === 'queen') {
                         pieceComponent = <Queen pieceColor={pieceColor} pos={[x, y]} />
+                    } else if (piece === 'king') {
+                        pieceComponent = <King pieceColor={pieceColor} pos={[x, y]} />
                     }
                 }
             })
