@@ -3,7 +3,11 @@ let boardPieces = {
   bishop: [[0, 2, 'black'], [0, 5, 'black'], [7, 2, 'white'], [7, 5, 'white']],
   rook: [[0, 0, 'black'], [0, 7, 'black'], [7, 0, 'white'], [7, 7, 'white']],
   queen: [[0, 3, 'black'], [7, 3, 'white']],
-  king: [[0, 4, 'black'], [7, 4, 'white']]
+  king: [[0, 4, 'black'], [7, 4, 'white']],
+  pawn: [[1, 0, 'black'], [1, 1, 'black'], [1, 2, 'black'], [1, 3, 'black'], [1, 4, 'black'],
+          [1, 5, 'black'], [1, 6, 'black'], [1, 7, 'black'], [6, 0, 'white'], [6, 1, 'white'],
+          [6, 2, 'white'], [6, 3, 'white'], [6, 4, 'white'], [6, 5, 'white'], [6, 6, 'white'],
+          [6, 7, 'white']]
 }
 
 let observer = null
