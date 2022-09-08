@@ -10,9 +10,12 @@ let boardPieces = {
           [6, 7, 'white']]
 }
 
+
+
 let observer = null
 
 let turn = 'white';
+
 
 function emitChange() {
   return observer(boardPieces)
@@ -96,8 +99,6 @@ function willCapturePiece(toX, toY, pieceColor) {
   })
 }
 
-
-
 export function canMovePiece(toX, toY, originalInfo) {
   let pieceColor = null;
   boardPieces[originalInfo.piece].forEach(pos => {          
@@ -117,6 +118,8 @@ export function canMovePiece(toX, toY, originalInfo) {
       return canMoveQueen(toX, toY, originalInfo, pieceColor);
     case 'pawn':
       return canMovePawn(toX, toY, originalInfo, pieceColor);
+    case 'king':
+      return canMoveKing(toX, toY, originalInfo, pieceColor);
     default:
       return;
   }
@@ -186,7 +189,38 @@ function canMovePawn(toX, toY, originalInfo, pieceColor) {
   return false;
 }
 
+function canMoveKing(toX, toY, originalInfo, pieceColor) {
+  if (isFriendlyPiece(toX, toY, pieceColor)) {
+    return false;
+  }
 
+  const [x, y] = originalInfo.pos;
+  const dx = toX - x;
+  const dy = toY - y;
+
+  if (isOneSquareAway(dx, dy) && !inCheck(toX, toY, pieceColor)) {
+    return true;
+  }
+}
+
+
+
+
+function inCheck(toX, toY, pieceColor) {
+  let check = false;
+  Object.keys(boardPieces).forEach(piece => {
+    boardPieces[piece].forEach(pieceInfo => {
+        if (piece === 'bishop' && pieceInfo[2] !== pieceColor) {
+          let originalInfo = { pos: [pieceInfo[0], pieceInfo[1]]}
+          if (canMoveBishop(toX, toY, originalInfo, pieceInfo[2])) {
+            check = true;
+          }
+        }
+    })
+  })
+
+  return check;
+}
 
 function canMoveKnight(toX, toY, originalInfo, pieceColor) {
     if (isFriendlyPiece(toX, toY, pieceColor)) {
