@@ -47,7 +47,6 @@ export default function Board({ boardPieces }) {
 
     function renderBoard() {
         let board = [];
-      
         for (let i = 0; i < 8; i++) {
             let row = [];
             for (let j = 0; j < 8; j++) {
@@ -61,9 +60,13 @@ export default function Board({ boardPieces }) {
     
     return (
         <DndProvider backend={HTML5Backend}>
-            <div className="board-container">
-                {renderBoard()}
+            <div className="game-container">
+                <h1 className="title">React Chess</h1>
+                <div className="board-container">
+                    {renderBoard()}
+                </div>
             </div>
+            
         </DndProvider>
         )
 }
