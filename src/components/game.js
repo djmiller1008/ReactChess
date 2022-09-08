@@ -94,8 +94,9 @@ function willCapturePiece(toX, toY, pieceColor) {
       }
     })
   })
-
 }
+
+
 
 export function canMovePiece(toX, toY, originalInfo) {
   let pieceColor = null;
@@ -114,12 +115,80 @@ export function canMovePiece(toX, toY, originalInfo) {
       return canMoveRook(toX, toY, originalInfo, pieceColor);
     case 'queen':
       return canMoveQueen(toX, toY, originalInfo, pieceColor);
+    case 'pawn':
+      return canMovePawn(toX, toY, originalInfo, pieceColor);
     default:
       return;
   }
 }
 
-export function canMoveKnight(toX, toY, originalInfo, pieceColor) {
+function isOccupiedByEnemy(x, y, pieceColor) {
+  let occupied = false;
+  Object.keys(boardPieces).forEach((piece, i) => {
+    boardPieces[piece].forEach((pieceInfo, i) => {
+    
+      if (x === pieceInfo[0] && y === pieceInfo[1] && pieceColor !== pieceInfo[2]) {
+        occupied = true;
+      }
+    })
+  });
+  return occupied;
+}
+
+function canMovePawn(toX, toY, originalInfo, pieceColor) {
+  if (isFriendlyPiece(toX, toY, pieceColor)) {
+    return false;
+  }
+  const [x, y] = originalInfo.pos
+  const dx = toX - x;
+  const dy = toY - y;
+  const occupiedByEnemy = isOccupiedByEnemy(toX, toY, pieceColor);
+
+  if (pieceColor === 'white') {
+    if (x === 6) {
+      if (dx === -2 && dy === 0 && !occupiedByEnemy) {
+        return true;
+      } else if (dx === -1 && dy === 0 && !occupiedByEnemy) {
+        return true;
+      }
+    } else {
+      if (dx === -1 && dy === 0 && !occupiedByEnemy) {
+        return true;
+      }
+    }
+
+    if (dx === -1 && dy === 1 && occupiedByEnemy) {
+      return true;
+    } else if (dx === -1 && dy === -1 && occupiedByEnemy) {
+      return true;
+    }
+
+  } else {
+    if (x === 1) {
+      if (dx === 2 && dy === 0 && !occupiedByEnemy) {
+        return true;
+      } else if (dx === 1 && dy === 0 && !occupiedByEnemy) {
+        return true;
+      }
+    } else {
+      if (dx === 1 && dy === 0 && !occupiedByEnemy) {
+        return true;
+      }
+    }
+
+    if (dx === 1 && dy === 1 && occupiedByEnemy) {
+      return true;
+    } else if (dx === 1 && dy === -1 && occupiedByEnemy) {
+      return true;
+    }
+    
+  }
+  return false;
+}
+
+
+
+function canMoveKnight(toX, toY, originalInfo, pieceColor) {
     if (isFriendlyPiece(toX, toY, pieceColor)) {
       return false;
     }
@@ -134,7 +203,7 @@ export function canMoveKnight(toX, toY, originalInfo, pieceColor) {
     )
 }
 
-export function canMoveBishop(toX, toY, originalInfo, pieceColor) {
+function canMoveBishop(toX, toY, originalInfo, pieceColor) {
   if (isFriendlyPiece(toX, toY, pieceColor)) {
     return false;
   }
@@ -149,7 +218,7 @@ export function canMoveBishop(toX, toY, originalInfo, pieceColor) {
   return false;
 }
 
-export function canMoveRook(toX, toY, originalInfo, pieceColor) {
+function canMoveRook(toX, toY, originalInfo, pieceColor) {
   if (isFriendlyPiece(toX, toY, pieceColor)) {
     return false;
   }
@@ -164,7 +233,7 @@ export function canMoveRook(toX, toY, originalInfo, pieceColor) {
   return false;
 }
 
-export function canMoveQueen(toX, toY, originalInfo, pieceColor) {
+function canMoveQueen(toX, toY, originalInfo, pieceColor) {
   if (isFriendlyPiece(toX, toY, pieceColor)) {
     return false;
   }
@@ -183,11 +252,11 @@ export function canMoveQueen(toX, toY, originalInfo, pieceColor) {
   return false;
 }
 
-export function isOnDiagonal(dx, dy) {
+function isOnDiagonal(dx, dy) {
   return Math.abs(dx) === Math.abs(dy);
 }
 
-export function isBlockedOnDiagonal(toX, toY, dx, dy, x, y) {
+function isBlockedOnDiagonal(toX, toY, dx, dy, x, y) {
   let xDirection = dx > 0 ? 1 : -1;
   let yDirection = dy > 0 ? 1 : -1;
   let blocked = false;
@@ -209,7 +278,7 @@ export function isBlockedOnDiagonal(toX, toY, dx, dy, x, y) {
 }
   
 
-export function isOneSquareAway(dx, dy) {
+function isOneSquareAway(dx, dy) {
   if (Math.abs(dx) === 1 && Math.abs(dy) === 1) {
     return true;
   } else if (Math.abs(dx) === 0 && Math.abs(dy) === 1) {
@@ -220,11 +289,11 @@ export function isOneSquareAway(dx, dy) {
   return false;
 }
 
-export function isOnStraightLine(dx, dy) {
+function isOnStraightLine(dx, dy) {
   return dx === 0 || dy === 0;
 }
 
-export function isBlockedOnStraightLine(toX, toY, dx, dy, x, y) {
+function isBlockedOnStraightLine(toX, toY, dx, dy, x, y) {
   let blocked = false;
     let xDirection = 0; 
     let yDirection = 0;
@@ -253,7 +322,7 @@ export function isBlockedOnStraightLine(toX, toY, dx, dy, x, y) {
     return blocked;
 }
 
-export function isOccupied(x, y) {
+function isOccupied(x, y) {
   let occupied = false;
   Object.keys(boardPieces).forEach((piece, i) => {
     boardPieces[piece].forEach((pieceInfo, i) => {
@@ -265,5 +334,7 @@ export function isOccupied(x, y) {
   });
   return occupied;
 }
+
+
 
   
