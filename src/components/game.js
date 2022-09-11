@@ -215,6 +215,11 @@ function inCheck(toX, toY, pieceColor) {
           if (canMoveBishop(toX, toY, originalInfo, pieceInfo[2])) {
             check = true;
           }
+        } else if (piece === 'rook' && pieceInfo[2] !== pieceColor) {
+          let originalInfo = { pos: [pieceInfo[0], pieceInfo[1]]}
+          if (canMoveRook(toX, toY, originalInfo, pieceInfo[2])) {
+            check = true;
+          }
         }
     })
   })
