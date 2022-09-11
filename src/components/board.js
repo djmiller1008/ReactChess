@@ -10,7 +10,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import '../assets/styles/board.css';
 
-export default function Board({ boardPieces }) {
+export default function Board({ boardPieces, check }) {
 
     function renderSquare(x, y, boardPieces) {
         const black = (x + y) % 2 === 1;
@@ -57,7 +57,8 @@ export default function Board({ boardPieces }) {
         return board;
     }
     
-    
+    let checkMessage = check ? 'Check!' : '';
+
     return (
         <DndProvider backend={HTML5Backend}>
             <div className="game-container">
@@ -65,6 +66,7 @@ export default function Board({ boardPieces }) {
                 <div className="board-container">
                     {renderBoard()}
                 </div>
+                {checkMessage}
             </div>
             
         </DndProvider>
