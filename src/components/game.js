@@ -10,6 +10,8 @@ let boardPieces = {
           [6, 7, 'white']]
 }
 
+let check = false;
+
 
 
 let observer = null
@@ -18,7 +20,7 @@ let turn = 'white';
 
 
 function emitChange() {
-  return observer(boardPieces)
+  return observer(boardPieces, check)
 }
 
 export function observeBoard(update) {
@@ -43,18 +45,87 @@ export function movePiece(toX, toY, originalInfo) {
     }
   });
 
+  if (putSelfInCheck(toX, toY, originalInfo, pieceColor)) {
+    alert("Cannot put yourself in check!");
+    return;
+  }
+
   
   if (!isFriendlyPiece(toX, toY, pieceColor) && isPlayerTurn(pieceColor)) {
-    willCapturePiece(toX, toY, originalInfo, pieceColor);
+    willCapturePiece(toX, toY, pieceColor, boardPieces);
   
     boardPieces[originalInfo.piece][index] = [toX, toY, pieceColor];
-    switchTurns();
 
+    // check if king is in check
+
+
+    switchTurns();
+    if (nowInCheck(originalInfo.piece, pieceColor, toX, toY)) {
+      check = true;
+    } else {
+      check = false;
+    }
     emitChange();
   }
  
 
 }
+
+function nowInCheck(piece, pieceColor, x, y, boardPiecesCopy) {
+  let enemyKing;
+  let originalInfo = { pos: [x, y], piece: piece }
+  boardPieces['king'].forEach(king => {
+    if (king[2] !== pieceColor) {
+      enemyKing = king;
+    }
+  });
+
+  
+  switch (piece) {
+    case 'bishop':
+      return canMoveBishop(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
+    case 'knight':
+      return canMoveKnight(enemyKing[0], enemyKing[1], originalInfo, pieceColor);
+    case 'queen':
+      return canMoveQueen(enemyKing[0], enemyKing[1], originalInfo, pieceColor);
+    case 'pawn':
+      return canMovePawn(enemyKing[0], enemyKing[1], originalInfo, pieceColor);
+    default:
+      return false;
+  }
+}
+
+function putSelfInCheck(toX, toY, originalInfo, pieceColor) {
+  let boardPiecesCopy = JSON.parse(JSON.stringify(boardPieces)); //make copy of pieces struct
+  let index;
+  boardPiecesCopy[originalInfo.piece].forEach((pieceInfo, i) => {     //find moving piece in pieces struct
+    if (originalInfo.pos[0] === pieceInfo[0] && originalInfo.pos[1] === pieceInfo[1]) {
+      index = i;
+    }
+  })
+
+  boardPiecesCopy[originalInfo.piece][index] = [toX, toY, pieceColor];  // move piece in pieces struct copy
+  willCapturePiece(toX, toY, pieceColor, boardPiecesCopy); // capture enemy piece if necessary (in copy)
+
+  let check = false;
+  
+  Object.keys(boardPiecesCopy).forEach(piece => { // loop through enemy pieces
+    boardPiecesCopy[piece].forEach(pieceInfo => {
+     if (pieceInfo[2] !== pieceColor) {
+      
+      if (nowInCheck(piece, pieceInfo[2], pieceInfo[0], pieceInfo[1], boardPiecesCopy)) {
+        check = true;
+      }
+     }
+      
+      
+    })
+  })
+  return check;
+  
+}
+
+
 
 function isPlayerTurn(pieceColor) {
   if (turn === pieceColor) {
@@ -88,18 +159,20 @@ function isFriendlyPiece(toX, toY, pieceColor) {
   return isFriendly;
 }
 
-function willCapturePiece(toX, toY, pieceColor) {
-  Object.keys(boardPieces).forEach(piece => {
-    boardPieces[piece].forEach(pieceInfo => {
+function willCapturePiece(toX, toY, pieceColor, piecesStruct) {
+  Object.keys(piecesStruct).forEach(piece => {
+    piecesStruct[piece].forEach(pieceInfo => {
       if (pieceInfo[2] !== pieceColor && pieceInfo[0] === toX && pieceInfo[1] === toY) {
-        const index = boardPieces[piece].indexOf(pieceInfo);
-        boardPieces[piece][index] = [];
+        const index = piecesStruct[piece].indexOf(pieceInfo);
+        piecesStruct[piece][index] = [];
       }
     })
   })
 }
 
+
 export function canMovePiece(toX, toY, originalInfo) {
+  
   let pieceColor = null;
   boardPieces[originalInfo.piece].forEach(pos => {          
     if (pos[0] === originalInfo.pos[0] && pos[1] === originalInfo.pos[1]) {
@@ -198,7 +271,7 @@ function canMoveKing(toX, toY, originalInfo, pieceColor) {
   const dx = toX - x;
   const dy = toY - y;
 
-  if (isOneSquareAway(dx, dy) && !inCheck(toX, toY, pieceColor)) {
+  if (isOneSquareAway(dx, dy)) {
     return true;
   }
 }
@@ -206,26 +279,7 @@ function canMoveKing(toX, toY, originalInfo, pieceColor) {
 
 
 
-function inCheck(toX, toY, pieceColor) {
-  let check = false;
-  Object.keys(boardPieces).forEach(piece => {
-    boardPieces[piece].forEach(pieceInfo => {
-        if (piece === 'bishop' && pieceInfo[2] !== pieceColor) {
-          let originalInfo = { pos: [pieceInfo[0], pieceInfo[1]]}
-          if (canMoveBishop(toX, toY, originalInfo, pieceInfo[2])) {
-            check = true;
-          }
-        } else if (piece === 'rook' && pieceInfo[2] !== pieceColor) {
-          let originalInfo = { pos: [pieceInfo[0], pieceInfo[1]]}
-          if (canMoveRook(toX, toY, originalInfo, pieceInfo[2])) {
-            check = true;
-          }
-        }
-    })
-  })
 
-  return check;
-}
 
 function canMoveKnight(toX, toY, originalInfo, pieceColor) {
     if (isFriendlyPiece(toX, toY, pieceColor)) {
@@ -242,7 +296,7 @@ function canMoveKnight(toX, toY, originalInfo, pieceColor) {
     )
 }
 
-function canMoveBishop(toX, toY, originalInfo, pieceColor) {
+function canMoveBishop(toX, toY, originalInfo, pieceColor, piecesStruct=boardPieces) {
   if (isFriendlyPiece(toX, toY, pieceColor)) {
     return false;
   }
@@ -251,8 +305,10 @@ function canMoveBishop(toX, toY, originalInfo, pieceColor) {
   const dx = toX - x;
   const dy = toY - y;
   
-  if (isOnDiagonal(dx, dy) && !isBlockedOnDiagonal(toX, toY, dx, dy, x, y)) {  // is on a diagonal
+  if (isOnDiagonal(dx, dy) && !isBlockedOnDiagonal(toX, toY, dx, dy, x, y, piecesStruct)) {
     return true;
+   
+    
   }
   return false;
 }
@@ -295,7 +351,7 @@ function isOnDiagonal(dx, dy) {
   return Math.abs(dx) === Math.abs(dy);
 }
 
-function isBlockedOnDiagonal(toX, toY, dx, dy, x, y) {
+function isBlockedOnDiagonal(toX, toY, dx, dy, x, y, piecesStruct) {
   let xDirection = dx > 0 ? 1 : -1;
   let yDirection = dy > 0 ? 1 : -1;
   let blocked = false;
@@ -306,7 +362,7 @@ function isBlockedOnDiagonal(toX, toY, dx, dy, x, y) {
     stepX = stepX + xDirection;
     stepY = stepY + yDirection;
     
-    if (isOccupied(stepX, stepY)) {
+    if (isOccupied(stepX, stepY, piecesStruct)) {
     
       if (stepX !== toX && stepY !== toY) {
         blocked = true;
@@ -361,10 +417,10 @@ function isBlockedOnStraightLine(toX, toY, dx, dy, x, y) {
     return blocked;
 }
 
-function isOccupied(x, y) {
+function isOccupied(x, y, piecesStruct=boardPieces) {
   let occupied = false;
-  Object.keys(boardPieces).forEach((piece, i) => {
-    boardPieces[piece].forEach((pieceInfo, i) => {
+  Object.keys(piecesStruct).forEach((piece, i) => {
+    piecesStruct[piece].forEach((pieceInfo, i) => {
     
       if (x === pieceInfo[0] && y === pieceInfo[1]) {
         occupied = true;
