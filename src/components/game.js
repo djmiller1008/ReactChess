@@ -45,10 +45,7 @@ export function movePiece(toX, toY, originalInfo) {
     }
   });
 
-  if (putSelfInCheck(toX, toY, originalInfo, pieceColor)) {
-    alert("Cannot put yourself in check!");
-    return;
-  }
+  
 
   
   if (!isFriendlyPiece(toX, toY, pieceColor) && isPlayerTurn(pieceColor)) {
@@ -60,7 +57,7 @@ export function movePiece(toX, toY, originalInfo) {
 
 
     switchTurns();
-    if (nowInCheck(originalInfo.piece, pieceColor, toX, toY)) {
+    if (nowInCheck(originalInfo.piece, pieceColor, toX, toY, boardPieces)) {
       check = true;
     } else {
       check = false;
@@ -71,7 +68,7 @@ export function movePiece(toX, toY, originalInfo) {
 
 }
 
-function nowInCheck(piece, pieceColor, x, y, boardPiecesCopy) {
+function nowInCheck(piece, pieceColor, x, y, boardPiecesCopy) {  // checks if enemy king is in check
   let enemyKing;
   let originalInfo = { pos: [x, y], piece: piece }
   boardPieces['king'].forEach(king => {
@@ -85,18 +82,22 @@ function nowInCheck(piece, pieceColor, x, y, boardPiecesCopy) {
     case 'bishop':
       return canMoveBishop(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
     case 'knight':
-      return canMoveKnight(enemyKing[0], enemyKing[1], originalInfo, pieceColor);
+      return canMoveKnight(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
     case 'queen':
-      return canMoveQueen(enemyKing[0], enemyKing[1], originalInfo, pieceColor);
+      return canMoveQueen(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
     case 'pawn':
-      return canMovePawn(enemyKing[0], enemyKing[1], originalInfo, pieceColor);
+      return canMovePawn(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
+    case 'rook':
+      return canMoveRook(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
+    case 'king':
+      return canMoveKing(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
     default:
       return false;
   }
 }
 
-function putSelfInCheck(toX, toY, originalInfo, pieceColor) {
-  let boardPiecesCopy = JSON.parse(JSON.stringify(boardPieces)); //make copy of pieces struct
+function putSelfInCheck(toX, toY, originalInfo, pieceColor) {  // makes sure you don't put yourself in check
+  let boardPiecesCopy = JSON.parse(JSON.stringify(boardPieces)); //make deep copy of pieces struct
   let index;
   boardPiecesCopy[originalInfo.piece].forEach((pieceInfo, i) => {     //find moving piece in pieces struct
     if (originalInfo.pos[0] === pieceInfo[0] && originalInfo.pos[1] === pieceInfo[1]) {
@@ -182,17 +183,59 @@ export function canMovePiece(toX, toY, originalInfo) {
  
   switch (originalInfo.piece) {
     case 'knight':
-      return canMoveKnight(toX, toY, originalInfo, pieceColor);
+      if (canMoveKnight(toX, toY, originalInfo, pieceColor)) {
+        if (putSelfInCheck(toX, toY, originalInfo, pieceColor)) {
+          return false;
+        } else {
+          return true;
+        } 
+      }
+      break;
     case 'bishop':
-      return canMoveBishop(toX, toY, originalInfo, pieceColor);
+      if (canMoveBishop(toX, toY, originalInfo, pieceColor)) {
+        if (putSelfInCheck(toX, toY, originalInfo, pieceColor)) {
+          return false;
+        } else {
+          return true;
+        } 
+      }
+      break;
     case 'rook':
-      return canMoveRook(toX, toY, originalInfo, pieceColor);
+      if (canMoveRook(toX, toY, originalInfo, pieceColor)) {
+        if (putSelfInCheck(toX, toY, originalInfo, pieceColor)) {
+          return false;
+        } else {
+          return true;
+        } 
+      }
+      break;
     case 'queen':
-      return canMoveQueen(toX, toY, originalInfo, pieceColor);
+      if (canMoveQueen(toX, toY, originalInfo, pieceColor)) {
+        if (putSelfInCheck(toX, toY, originalInfo, pieceColor)) {
+          return false;
+        } else {
+          return true;
+        } 
+      }
+      break;
     case 'pawn':
-      return canMovePawn(toX, toY, originalInfo, pieceColor);
+      if (canMovePawn(toX, toY, originalInfo, pieceColor)) {
+        if (putSelfInCheck(toX, toY, originalInfo, pieceColor)) {
+          return false;
+        } else {
+          return true;
+        } 
+      }
+      break;
     case 'king':
-      return canMoveKing(toX, toY, originalInfo, pieceColor);
+      if (canMoveKing(toX, toY, originalInfo, pieceColor)) {
+        if (putSelfInCheck(toX, toY, originalInfo, pieceColor)) {
+          return false;
+        } else {
+          return true;
+        } 
+      }
+      break;
     default:
       return;
   }
@@ -281,7 +324,7 @@ function canMoveKing(toX, toY, originalInfo, pieceColor) {
 
 
 
-function canMoveKnight(toX, toY, originalInfo, pieceColor) {
+function canMoveKnight(toX, toY, originalInfo, pieceColor, piecesStruct=boardPieces) {
     if (isFriendlyPiece(toX, toY, pieceColor)) {
       return false;
     }
@@ -313,7 +356,7 @@ function canMoveBishop(toX, toY, originalInfo, pieceColor, piecesStruct=boardPie
   return false;
 }
 
-function canMoveRook(toX, toY, originalInfo, pieceColor) {
+function canMoveRook(toX, toY, originalInfo, pieceColor, piecesStruct=boardPieces) {
   if (isFriendlyPiece(toX, toY, pieceColor)) {
     return false;
   }
@@ -322,13 +365,13 @@ function canMoveRook(toX, toY, originalInfo, pieceColor) {
   const dx = toX - x;
   const dy = toY - y;
   
-  if (isOnStraightLine(dx, dy) && !isBlockedOnStraightLine(toX, toY, dx, dy, x, y)) {
+  if (isOnStraightLine(dx, dy) && !isBlockedOnStraightLine(toX, toY, dx, dy, x, y, piecesStruct)) {
     return true;
   }
   return false;
 }
 
-function canMoveQueen(toX, toY, originalInfo, pieceColor) {
+function canMoveQueen(toX, toY, originalInfo, pieceColor, piecesStruct=boardPieces) {
   if (isFriendlyPiece(toX, toY, pieceColor)) {
     return false;
   }
@@ -339,9 +382,9 @@ function canMoveQueen(toX, toY, originalInfo, pieceColor) {
 
   if (isOneSquareAway(dx, dy)) {
     return true;
-  } else if (isOnStraightLine(dx, dy) && !isBlockedOnStraightLine(toX, toY, dx, dy, x, y)) {
+  } else if (isOnStraightLine(dx, dy) && !isBlockedOnStraightLine(toX, toY, dx, dy, x, y, piecesStruct)) {
     return true;
-  } else if (isOnDiagonal(dx, dy) && !isBlockedOnDiagonal(toX, toY, dx, dy, x, y)) {
+  } else if (isOnDiagonal(dx, dy) && !isBlockedOnDiagonal(toX, toY, dx, dy, x, y, piecesStruct)) {
     return true;
   }
   return false;
@@ -388,7 +431,7 @@ function isOnStraightLine(dx, dy) {
   return dx === 0 || dy === 0;
 }
 
-function isBlockedOnStraightLine(toX, toY, dx, dy, x, y) {
+function isBlockedOnStraightLine(toX, toY, dx, dy, x, y, piecesStruct) {
   let blocked = false;
     let xDirection = 0; 
     let yDirection = 0;
@@ -406,7 +449,7 @@ function isBlockedOnStraightLine(toX, toY, dx, dy, x, y) {
       
       stepX = stepX + xDirection;
       stepY = stepY + yDirection;
-      if (isOccupied(stepX, stepY)) {
+      if (isOccupied(stepX, stepY, piecesStruct)) {
         if (stepX !== toX && stepY === toY) {
           blocked = true;
         } else if (stepX === toX && stepY !== toY) {
