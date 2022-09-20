@@ -71,15 +71,15 @@ export function movePiece(toX, toY, originalInfo) {
 function nowInCheck(piece, pieceColor, x, y, boardPiecesCopy) {  // checks if enemy king is in check
   let enemyKing;
   let originalInfo = { pos: [x, y], piece: piece }
-  boardPieces['king'].forEach(king => {
+  boardPiecesCopy['king'].forEach(king => {
     if (king[2] !== pieceColor) {
       enemyKing = king;
     }
   });
-
   
   switch (piece) {
     case 'bishop':
+      
       return canMoveBishop(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
     case 'knight':
       return canMoveKnight(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
@@ -145,11 +145,11 @@ function switchTurns() {
   }
 }
 
-function isFriendlyPiece(toX, toY, pieceColor) {
+function isFriendlyPiece(toX, toY, pieceColor, piecesStruct=boardPieces) {
   
   let isFriendly = false;
-  Object.keys(boardPieces).forEach(piece => {
-    boardPieces[piece].forEach((pieceInfo, i) => {
+  Object.keys(piecesStruct).forEach(piece => {
+    piecesStruct[piece].forEach((pieceInfo, i) => {
     
       if (pieceInfo[2] === pieceColor && pieceInfo[0] === toX && pieceInfo[1] === toY) {
         
@@ -241,10 +241,10 @@ export function canMovePiece(toX, toY, originalInfo) {
   }
 }
 
-function isOccupiedByEnemy(x, y, pieceColor) {
+function isOccupiedByEnemy(x, y, pieceColor, piecesStruct) {
   let occupied = false;
-  Object.keys(boardPieces).forEach((piece, i) => {
-    boardPieces[piece].forEach((pieceInfo, i) => {
+  Object.keys(piecesStruct).forEach((piece, i) => {
+    piecesStruct[piece].forEach((pieceInfo, i) => {
     
       if (x === pieceInfo[0] && y === pieceInfo[1] && pieceColor !== pieceInfo[2]) {
         occupied = true;
@@ -254,14 +254,14 @@ function isOccupiedByEnemy(x, y, pieceColor) {
   return occupied;
 }
 
-function canMovePawn(toX, toY, originalInfo, pieceColor) {
-  if (isFriendlyPiece(toX, toY, pieceColor)) {
+function canMovePawn(toX, toY, originalInfo, pieceColor, piecesStruct=boardPieces) {
+  if (isFriendlyPiece(toX, toY, pieceColor, piecesStruct)) {
     return false;
   }
   const [x, y] = originalInfo.pos
   const dx = toX - x;
   const dy = toY - y;
-  const occupiedByEnemy = isOccupiedByEnemy(toX, toY, pieceColor);
+  const occupiedByEnemy = isOccupiedByEnemy(toX, toY, pieceColor, piecesStruct);
 
   if (pieceColor === 'white') {
     if (x === 6) {
@@ -325,7 +325,7 @@ function canMoveKing(toX, toY, originalInfo, pieceColor) {
 
 
 function canMoveKnight(toX, toY, originalInfo, pieceColor, piecesStruct=boardPieces) {
-    if (isFriendlyPiece(toX, toY, pieceColor)) {
+    if (isFriendlyPiece(toX, toY, pieceColor, piecesStruct)) {
       return false;
     }
     
@@ -340,7 +340,7 @@ function canMoveKnight(toX, toY, originalInfo, pieceColor, piecesStruct=boardPie
 }
 
 function canMoveBishop(toX, toY, originalInfo, pieceColor, piecesStruct=boardPieces) {
-  if (isFriendlyPiece(toX, toY, pieceColor)) {
+  if (isFriendlyPiece(toX, toY, pieceColor, piecesStruct)) {
     return false;
   }
 
@@ -357,7 +357,7 @@ function canMoveBishop(toX, toY, originalInfo, pieceColor, piecesStruct=boardPie
 }
 
 function canMoveRook(toX, toY, originalInfo, pieceColor, piecesStruct=boardPieces) {
-  if (isFriendlyPiece(toX, toY, pieceColor)) {
+  if (isFriendlyPiece(toX, toY, pieceColor, piecesStruct)) {
     return false;
   }
 
@@ -372,7 +372,7 @@ function canMoveRook(toX, toY, originalInfo, pieceColor, piecesStruct=boardPiece
 }
 
 function canMoveQueen(toX, toY, originalInfo, pieceColor, piecesStruct=boardPieces) {
-  if (isFriendlyPiece(toX, toY, pieceColor)) {
+  if (isFriendlyPiece(toX, toY, pieceColor, piecesStruct)) {
     return false;
   }
 
@@ -460,7 +460,7 @@ function isBlockedOnStraightLine(toX, toY, dx, dy, x, y, piecesStruct) {
     return blocked;
 }
 
-function isOccupied(x, y, piecesStruct=boardPieces) {
+function isOccupied(x, y, piecesStruct) {
   let occupied = false;
   Object.keys(piecesStruct).forEach((piece, i) => {
     piecesStruct[piece].forEach((pieceInfo, i) => {
