@@ -11,8 +11,8 @@ let boardPieces = {
 }
 
 let check = false;
-
-
+let checkmate = false;
+let winner;
 
 let observer = null
 
@@ -20,7 +20,7 @@ let turn = 'white';
 
 
 function emitChange() {
-  return observer(boardPieces, check)
+  return observer(boardPieces, check, checkmate, winner)
 }
 
 export function observeBoard(update) {
@@ -28,6 +28,7 @@ export function observeBoard(update) {
     throw new Error('Multiple observers not implemented.')
   }
   observer = update
+  
   emitChange()
 }
 
@@ -58,14 +59,40 @@ export function movePiece(toX, toY, originalInfo) {
 
     switchTurns();
     if (nowInCheck(originalInfo.piece, pieceColor, toX, toY, boardPieces)) {
-      check = true;
+      if (isCheckmate(pieceColor)) {
+        checkmate = true;
+        winner = pieceColor;
+      } else {
+        check = true;
+      }
     } else {
       check = false;
+      checkmate = false;
     }
+
+
     emitChange();
   }
- 
+}
 
+function isCheckmate(pieceColor) {   
+  let checkMate = true;
+  Object.keys(boardPieces).forEach(piece => {   // loop through enemy pieces
+    boardPieces[piece].forEach(pieceInfo => {
+      let originalInfo = { pos: [pieceInfo[0], pieceInfo[1]], piece: piece}
+      
+      if (pieceColor !== pieceInfo[2]) {
+        for (let x = 0; x < 8; x++) {
+          for (let y = 0; y < 8; y++) {
+            if (canMovePiece(x, y, originalInfo)) {
+              checkMate = false;
+            }
+          }
+        }
+      }
+    })
+  })
+  return checkMate;
 }
 
 function nowInCheck(piece, pieceColor, x, y, boardPiecesCopy) {  // checks if enemy king is in check
