@@ -7,8 +7,8 @@ const root = document.getElementById('root')
 
 
 
-observeBoard((boardPieces, check) =>
-  ReactDOM.render(<Board boardPieces={boardPieces} check={check} />, root)
+observeBoard((boardPieces, check, checkmate, winner) =>
+  ReactDOM.render(<Board boardPieces={boardPieces} check={check} winner={winner} checkmate={checkmate} />, root)
 )
 
 
