@@ -10,7 +10,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import '../assets/styles/board.css';
 
-export default function Board({ boardPieces, check }) {
+export default function Board({ boardPieces, check, checkmate, winner }) {
 
     function renderSquare(x, y, boardPieces) {
         const black = (x + y) % 2 === 1;
@@ -58,15 +58,31 @@ export default function Board({ boardPieces, check }) {
     }
     
     let checkMessage = check ? 'Check!' : '';
-
+    let checkmateMessage = checkmate ? 'Checkmate!' : '';
+    let winningMessage = '';
+    if (winner === 'white') {
+        winningMessage = 'White is the winner!';
+    } else if (winner === 'black') {
+        winningMessage = 'Black is the winner!';
+    }
+   
     return (
         <DndProvider backend={HTML5Backend}>
             <div className="game-container">
                 <h1 className="title">React Chess</h1>
-                <div className="board-container">
-                    {renderBoard()}
-                </div>
-                {checkMessage}
+
+                <section className="game-area">
+                    <div className="board-container">
+                        {renderBoard()}
+                    </div>
+                    <p className="message-box">
+                        {checkMessage}
+                        {checkmateMessage}
+                        {winningMessage}
+                    </p>
+                   
+                </section>
+                
             </div>
             
         </DndProvider>
