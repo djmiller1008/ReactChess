@@ -56,6 +56,10 @@ export default function Board({ boardPieces, check, checkmate, winner }) {
         }
         return board;
     }
+
+    function newGame() {
+        window.location.reload();
+    }
     
     let checkMessage = check ? 'Check!' : '';
     let checkmateMessage = checkmate ? 'Checkmate!' : '';
@@ -76,9 +80,10 @@ export default function Board({ boardPieces, check, checkmate, winner }) {
                         {renderBoard()}
                     </div>
                     <p className="message-box">
-                        {checkMessage}
-                        {checkmateMessage}
-                        {winningMessage}
+                        <button className="new-game-button" onClick={() => newGame()}>New Game</button>
+                        <span className="message">{checkMessage}</span>
+                        <span className="message">{checkmateMessage}</span>
+                        <span className="message">{winningMessage}</span>
                     </p>
                    
                 </section>
