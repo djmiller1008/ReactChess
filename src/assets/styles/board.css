@@ -1,9 +1,12 @@
 body {
     background-color: gainsboro;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .title {
     font-family: sans-serif;
+    margin-top: .75rem;
     text-align: center;
 }
 
@@ -25,8 +28,27 @@ body {
 
 .message-box {
     position: relative;
+    display: flex;
+    flex-direction: column;
     bottom: 30rem;
     left: 40rem;
     font-weight: 700;
     font-size: 2rem;
+}
+
+.new-game-button {
+    width: 5rem;
+    height: 4rem;
+    border: none;
+    border: 3px solid black;
+
+}
+
+.new-game-button:hover {
+    background-color: white;
+    cursor: pointer;
+}
+
+.message {
+    margin-top: 2rem;
 }
