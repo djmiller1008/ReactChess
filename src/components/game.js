@@ -65,6 +65,9 @@ export function movePiece(toX, toY, originalInfo) {
       } else {
         check = true;
       }
+    } else if (discoveredCheck(originalInfo.piece, pieceColor, toX, toY, boardPieces)) {
+
+      check = true;
     } else {
       check = false;
       checkmate = false;
@@ -93,6 +96,62 @@ function isCheckmate(pieceColor) {
     })
   })
   return checkMate;
+}
+
+function discoveredCheck(piece, pieceColor, x, y, boardPiecesCopy) {
+  let enemyKing;
+  let check = false;
+  boardPiecesCopy['king'].forEach(king => {
+    if (king[2] !== pieceColor) {
+      enemyKing = king;
+    }
+  });
+
+  Object.keys(boardPiecesCopy).forEach(piece => {
+    boardPiecesCopy[piece].forEach(pieceInfo => {
+      let originalInfo = { pos: [pieceInfo[0], pieceInfo[1]], piece: piece }
+      if (piece === 'queen' && pieceInfo[0] === 6) {
+        
+      }
+      switch (piece) {
+        case 'bishop':
+          if (canMoveBishop(enemyKing[0], enemyKing[1], originalInfo, pieceInfo[2], boardPiecesCopy)) {
+            check = true;
+          };
+          break;
+        case 'knight':
+          if (canMoveKnight(enemyKing[0], enemyKing[1], originalInfo, pieceInfo[2], boardPiecesCopy)) {
+            check = true;
+          };
+          break;
+        case 'queen':
+          if (canMoveQueen(enemyKing[0], enemyKing[1], originalInfo, pieceInfo[2], boardPiecesCopy)) {
+            check = true;
+          };
+          break;
+        case 'pawn':
+          if (canMovePawn(enemyKing[0], enemyKing[1], originalInfo, pieceInfo[2], boardPiecesCopy)) {
+            check = true;
+          };
+          break;
+        case 'rook':
+          if (canMoveRook(enemyKing[0], enemyKing[1], originalInfo, pieceInfo[2], boardPiecesCopy)) {
+            check = true;
+          };
+          break;
+        case 'king':
+          if (canMoveKing(enemyKing[0], enemyKing[1], originalInfo, pieceInfo[2], boardPiecesCopy)) {
+            check = true;
+          };
+          break;
+        default:
+          break;
+      }
+    })
+  })
+  return check;
+  
+  
 }
 
 function nowInCheck(piece, pieceColor, x, y, boardPiecesCopy) {  // checks if enemy king is in check
