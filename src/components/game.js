@@ -391,21 +391,37 @@ function canMovePawn(toX, toY, originalInfo, pieceColor, piecesStruct=boardPiece
   return false;
 }
 
-function canMoveKing(toX, toY, originalInfo, pieceColor) {
+function canMoveKing(toX, toY, originalInfo, pieceColor, piecesStruct=boardPieces) {
   if (isFriendlyPiece(toX, toY, pieceColor)) {
     return false;
   }
 
   const [x, y] = originalInfo.pos;
+  const color = originalInfo.pieceColor;
   const dx = toX - x;
   const dy = toY - y;
 
-  if (isOneSquareAway(dx, dy)) {
+  if (isOneSquareAway(dx, dy) && !enemyKingCanAttack(color, toX, toY, piecesStruct)) {
     return true;
   }
 }
 
+function enemyKingCanAttack(color, toX, toY, piecesStruct) {
+  let enemyKingPos;
+  piecesStruct['king'].forEach(king => {
+    if (king[2] !== color) {
+      enemyKingPos = [king[0], king[1]];
+    }
+  })
+  
+  const dx = toX - enemyKingPos[0];
+  const dy = toY - enemyKingPos[1];
 
+  if (isOneSquareAway(dx, dy)) {
+    return true;
+  }
+  return false;
+}
 
 
 
