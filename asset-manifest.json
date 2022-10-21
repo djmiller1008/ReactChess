@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/ReactChess/static/css/main.13a5f9fd.css",
+    "main.js": "/ReactChess/static/js/main.eb04d250.js",
+    "static/media/blackRook.svg": "/ReactChess/static/media/blackRook.fdc575582c2cbe2ec82093702945226f.svg",
+    "static/media/blackKnight.svg": "/ReactChess/static/media/blackKnight.7930be9e07b51bc0e069b1d77e31261a.svg",
+    "static/media/blackKing.svg": "/ReactChess/static/media/blackKing.6c8cc8fabe5215cc854dec67ee7781fd.svg",
+    "static/media/blackQueen.svg": "/ReactChess/static/media/blackQueen.cf388bf415c0d33ec16f23593b8d0d91.svg",
+    "static/media/whiteKing.svg": "/ReactChess/static/media/whiteKing.3f959aab36df6290a8e0f17c7d242c19.svg",
+    "static/media/whiteKnight.svg": "/ReactChess/static/media/whiteKnight.d47944d2cee4f8c707d1907706c142fa.svg",
+    "static/media/blackBishop.svg": "/ReactChess/static/media/blackBishop.04932f63ef10dcdee115b649286230f5.svg",
+    "static/media/whiteBishop.svg": "/ReactChess/static/media/whiteBishop.aa411d5809c6380713b4312d55aafc53.svg",
+    "static/media/whiteRook.svg": "/ReactChess/static/media/whiteRook.9e48b84f189eea24339f8a679e7a664f.svg",
+    "static/media/whiteQueen.svg": "/ReactChess/static/media/whiteQueen.7a1aecff0f22ff68c43f9b7f8a81d0b4.svg",
+    "static/media/blackPawn.svg": "/ReactChess/static/media/blackPawn.be5d44ca5ee868885d216188996e3a00.svg",
+    "static/media/whitePawn.svg": "/ReactChess/static/media/whitePawn.50273cc6d86861932d0a01c38274009a.svg",
+    "index.html": "/ReactChess/index.html",
+    "main.13a5f9fd.css.map": "/ReactChess/static/css/main.13a5f9fd.css.map",
+    "main.eb04d250.js.map": "/ReactChess/static/js/main.eb04d250.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.13a5f9fd.css",
+    "static/js/main.eb04d250.js"
+  ]
+}
