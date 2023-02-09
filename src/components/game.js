@@ -18,7 +18,6 @@ let observer = null
 
 let turn = 'white';
 
-
 function emitChange() {
   return observer(boardPieces, check, checkmate, winner)
 }
@@ -58,16 +57,13 @@ export function movePiece(toX, toY, originalInfo) {
 
 
     switchTurns();
-    if (nowInCheck(originalInfo.piece, pieceColor, toX, toY, boardPieces)) {
+    if (isInCheck(pieceColor, boardPieces)) {
       if (isCheckmate(pieceColor)) {
         checkmate = true;
         winner = pieceColor;
       } else {
         check = true;
       }
-    } else if (discoveredCheck(originalInfo.piece, pieceColor, toX, toY, boardPieces)) {
-
-      check = true;
     } else {
       check = false;
       checkmate = false;
@@ -79,7 +75,7 @@ export function movePiece(toX, toY, originalInfo) {
 }
 
 function isCheckmate(pieceColor) {   
-  let checkMate = true;
+  let checkmate = true;
   Object.keys(boardPieces).forEach(piece => {   // loop through enemy pieces
     boardPieces[piece].forEach(pieceInfo => {
       let originalInfo = { pos: [pieceInfo[0], pieceInfo[1]], piece: piece}
@@ -88,17 +84,17 @@ function isCheckmate(pieceColor) {
         for (let x = 0; x < 8; x++) {
           for (let y = 0; y < 8; y++) {
             if (canMovePiece(x, y, originalInfo)) {
-              checkMate = false;
+              checkmate = false;
             }
           }
         }
       }
     })
   })
-  return checkMate;
+  return checkmate;
 }
 
-function discoveredCheck(piece, pieceColor, x, y, boardPiecesCopy) {
+function isInCheck(pieceColor, boardPiecesCopy) {
   let enemyKing;
   let check = false;
   boardPiecesCopy['king'].forEach(king => {
@@ -204,8 +200,6 @@ function putSelfInCheck(toX, toY, originalInfo, pieceColor) {  // makes sure you
         check = true;
       }
      }
-      
-      
     })
   })
   return check;
@@ -397,7 +391,7 @@ function canMoveKing(toX, toY, originalInfo, pieceColor, piecesStruct=boardPiece
   }
 
   const [x, y] = originalInfo.pos;
-  const color = originalInfo.pieceColor;
+  const color = pieceColor;
   const dx = toX - x;
   const dy = toY - y;
 
