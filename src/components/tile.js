@@ -19,10 +19,9 @@ export default function Tile({ x, y, black, children }) {
   )
  
   const fill = black ? 'brown' : 'white';
-  const stroke = black ? 'white' : 'brown';
 
   return (
-    <div ref={drop} style={{backgroundColor: canDrop ? 'yellow' : fill, color: stroke }} className='tile-container'>
+    <div ref={drop} style={{ backgroundColor: canDrop ? 'yellow' : fill }} className='tile-container'>
         {children}
     </div>
   )
