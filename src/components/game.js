@@ -53,10 +53,12 @@ export function movePiece(toX, toY, originalInfo) {
   
     boardPieces[originalInfo.piece][index] = [toX, toY, pieceColor];
 
-    // check if king is in check
+    // check if pawn is promoting
+    if ((pieceColor === "white" && toX === 0) || (pieceColor === "black" && toX === 7)) {
 
+    }
 
-    switchTurns();
+    // check if king is in check and for checkmate
     if (isInCheck(pieceColor, boardPieces)) {
       if (isCheckmate(pieceColor)) {
         checkmate = true;
@@ -69,7 +71,7 @@ export function movePiece(toX, toY, originalInfo) {
       checkmate = false;
     }
 
-
+    switchTurns();
     emitChange();
   }
 }
