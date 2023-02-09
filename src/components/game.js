@@ -150,34 +150,6 @@ function isInCheck(pieceColor, boardPiecesCopy) {
   
 }
 
-function nowInCheck(piece, pieceColor, x, y, boardPiecesCopy) {  // checks if enemy king is in check
-  let enemyKing;
-  let originalInfo = { pos: [x, y], piece: piece }
-  boardPiecesCopy['king'].forEach(king => {
-    if (king[2] !== pieceColor) {
-      enemyKing = king;
-    }
-  });
-  
-  switch (piece) {
-    case 'bishop':
-      
-      return canMoveBishop(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
-    case 'knight':
-      return canMoveKnight(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
-    case 'queen':
-      return canMoveQueen(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
-    case 'pawn':
-      return canMovePawn(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
-    case 'rook':
-      return canMoveRook(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
-    case 'king':
-      return canMoveKing(enemyKing[0], enemyKing[1], originalInfo, pieceColor, boardPiecesCopy);
-    default:
-      return false;
-  }
-}
-
 function putSelfInCheck(toX, toY, originalInfo, pieceColor) {  // makes sure you don't put yourself in check
   let boardPiecesCopy = JSON.parse(JSON.stringify(boardPieces)); //make deep copy of pieces struct
   let index;
@@ -190,20 +162,10 @@ function putSelfInCheck(toX, toY, originalInfo, pieceColor) {  // makes sure you
   boardPiecesCopy[originalInfo.piece][index] = [toX, toY, pieceColor];  // move piece in pieces struct copy
   willCapturePiece(toX, toY, pieceColor, boardPiecesCopy); // capture enemy piece if necessary (in copy)
 
-  let check = false;
+  let enemyColor = pieceColor === 'white' ? 'black' : 'white';
   
-  Object.keys(boardPiecesCopy).forEach(piece => { // loop through enemy pieces
-    boardPiecesCopy[piece].forEach(pieceInfo => {
-     if (pieceInfo[2] !== pieceColor) {
-      
-      if (nowInCheck(piece, pieceInfo[2], pieceInfo[0], pieceInfo[1], boardPiecesCopy)) {
-        check = true;
-      }
-     }
-    })
-  })
-  return check;
-  
+  return isInCheck(enemyColor, boardPiecesCopy);
+
 }
 
 
@@ -226,13 +188,10 @@ function switchTurns() {
 }
 
 function isFriendlyPiece(toX, toY, pieceColor, piecesStruct=boardPieces) {
-  
   let isFriendly = false;
   Object.keys(piecesStruct).forEach(piece => {
     piecesStruct[piece].forEach((pieceInfo, i) => {
-    
       if (pieceInfo[2] === pieceColor && pieceInfo[0] === toX && pieceInfo[1] === toY) {
-        
         isFriendly = true;
       }
     })
