@@ -54,8 +54,10 @@ export function movePiece(toX, toY, originalInfo) {
     boardPieces[originalInfo.piece][index] = [toX, toY, pieceColor];
 
     // check if pawn is promoting
-    if ((pieceColor === "white" && toX === 0) || (pieceColor === "black" && toX === 7)) {
-
+    if (originalInfo.piece === "pawn") {
+      if ((pieceColor === "white" && toX === 0) || (pieceColor === "black" && toX === 7)) {
+        promotePiece(pieceColor, toX, toY);
+      }
     }
 
     // check if king is in check and for checkmate
@@ -74,6 +76,18 @@ export function movePiece(toX, toY, originalInfo) {
     switchTurns();
     emitChange();
   }
+}
+
+function promotePiece(pieceColor, toX, toY) {
+  let index;
+  boardPieces["pawn"].forEach((pos, i) => {          
+    if (pos[0] === toX && pos[1] === toY) {
+        index = i;
+    }
+  });
+
+  boardPieces["pawn"][index] = [];
+  boardPieces["queen"].push([toX, toY, pieceColor]);
 }
 
 function isCheckmate(pieceColor) {   
