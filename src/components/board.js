@@ -9,8 +9,9 @@ import Pawn from "./pieces/pawn";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import '../assets/styles/board.css';
+import Promotion from "./promotion";
 
-export default function Board({ boardPieces, check, checkmate, winner }) {
+export default function Board({ boardPieces, check, checkmate, winner, promotionColor, promotionHidden, promotionXY }) {
 
     function renderSquare(x, y, boardPieces) {
         const black = (x + y) % 2 === 1;
@@ -22,17 +23,17 @@ export default function Board({ boardPieces, check, checkmate, winner }) {
                 if (x === pieceInfo[0] && y === pieceInfo[1]) {
                     pieceColor = pieceInfo[2];
                     if (piece === 'knight') {
-                        pieceComponent = <Knight pieceColor={pieceColor}  pos={[x, y]} />
+                        pieceComponent = <Knight key={i} pieceColor={pieceColor}  pos={[x, y]} />
                     } else if (piece === 'bishop') {
-                        pieceComponent = <Bishop pieceColor={pieceColor} pos={[x, y]} />
+                        pieceComponent = <Bishop key={i} pieceColor={pieceColor} pos={[x, y]} />
                     } else if (piece === 'rook') {
-                        pieceComponent = <Rook pieceColor={pieceColor} pos={[x, y]} />
+                        pieceComponent = <Rook key={i} pieceColor={pieceColor} pos={[x, y]} />
                     } else if (piece === 'queen') {
-                        pieceComponent = <Queen pieceColor={pieceColor} pos={[x, y]} />
+                        pieceComponent = <Queen key={i} pieceColor={pieceColor} pos={[x, y]} />
                     } else if (piece === 'king') {
-                        pieceComponent = <King pieceColor={pieceColor} pos={[x, y]} />
+                        pieceComponent = <King key={i} pieceColor={pieceColor} pos={[x, y]} />
                     } else if (piece === 'pawn') {
-                        pieceComponent = <Pawn pieceColor={pieceColor} pos={[x, y]} />
+                        pieceComponent = <Pawn key={i} pieceColor={pieceColor} pos={[x, y]} />
                     }
                 }
             })
@@ -40,10 +41,8 @@ export default function Board({ boardPieces, check, checkmate, winner }) {
         
         const piece = pieceComponent ? pieceComponent : null;
 
-        return <div><Tile x={x} y={y} black={black}>{piece}</Tile></div>
+        return <div><Tile key={[x, y]} x={x} y={y} black={black}>{piece}</Tile></div>
     }
-
-    
 
     function renderBoard() {
         let board = [];
@@ -71,25 +70,22 @@ export default function Board({ boardPieces, check, checkmate, winner }) {
     }
    
     return (
-        <DndProvider backend={HTML5Backend}>
-            <div className="game-container">
-                <h1 className="title">React Chess</h1>
-
-                <section className="game-area">
-                    <div className="board-container">
-                        {renderBoard()}
-                    </div>
-                    <p className="message-box">
-                        <button className="new-game-button" onClick={() => newGame()}>New Game</button>
-                        <span className="message">{checkMessage}</span>
-                        <span className="message">{checkmateMessage}</span>
-                        <span className="message">{winningMessage}</span>
-                    </p>
-                   
-                </section>
-                
-            </div>
-            
+        <DndProvider backend={HTML5Backend}> 
+                <div className="game-container"> 
+                    <h1 className="title">React Chess</h1>
+                    <section className="game-area">
+                        <Promotion color={promotionColor} hidden={promotionHidden} pos={promotionXY} />
+                        <div className="board-container">
+                            {renderBoard()}
+                        </div>
+                        <p className="message-box">
+                            <button className="new-game-button" onClick={() => newGame()}>New Game</button>
+                            <span className="message">{checkMessage}</span>
+                            <span className="message">{checkmateMessage}</span>
+                            <span className="message">{winningMessage}</span>
+                        </p>
+                    </section> 
+                </div>
         </DndProvider>
         )
 }
