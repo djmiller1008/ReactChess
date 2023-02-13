@@ -13,13 +13,16 @@ let boardPieces = {
 let check = false;
 let checkmate = false;
 let winner;
+let promotionHidden = true;
+let promotionPosition;
+let promotionColor;
 
 let observer = null
 
 let turn = 'white';
 
 function emitChange() {
-  return observer(boardPieces, check, checkmate, winner)
+  return observer(boardPieces, check, checkmate, winner, promotionColor, promotionHidden, promotionPosition)
 }
 
 export function observeBoard(update) {
@@ -56,7 +59,9 @@ export function movePiece(toX, toY, originalInfo) {
     // check if pawn is promoting
     if (originalInfo.piece === "pawn") {
       if ((pieceColor === "white" && toX === 0) || (pieceColor === "black" && toX === 7)) {
-        promotePiece(pieceColor, toX, toY);
+        promotionHidden = false;
+        promotionColor = pieceColor;
+        promotionPosition = [toX, toY]
       }
     }
 
@@ -78,7 +83,7 @@ export function movePiece(toX, toY, originalInfo) {
   }
 }
 
-function promotePiece(pieceColor, toX, toY) {
+export function promotePiece(pieceColor, toX, toY, pieceToPromoteTo) {
   let index;
   boardPieces["pawn"].forEach((pos, i) => {          
     if (pos[0] === toX && pos[1] === toY) {
@@ -87,7 +92,22 @@ function promotePiece(pieceColor, toX, toY) {
   });
 
   boardPieces["pawn"][index] = [];
-  boardPieces["queen"].push([toX, toY, pieceColor]);
+  boardPieces[pieceToPromoteTo].push([toX, toY, pieceColor]);
+  promotionHidden = true;
+
+  // check if king is in check and for checkmate after promotion
+  if (isInCheck(pieceColor, boardPieces)) {
+    if (isCheckmate(pieceColor)) {
+      checkmate = true;
+      winner = pieceColor;
+    } else {
+      check = true;
+    }
+  } else {
+    check = false;
+    checkmate = false;
+  }
+  emitChange();
 }
 
 function isCheckmate(pieceColor) {   
